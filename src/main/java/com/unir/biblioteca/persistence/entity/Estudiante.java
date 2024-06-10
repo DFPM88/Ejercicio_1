@@ -25,6 +25,8 @@ public class Estudiante {
     private String NombreEstudiante;
     private String CodigoEstudiante;
     private String Facultad;
+    private String Telefono;
+    private String Email;
 
     @OneToMany(mappedBy = "estudiante")
     private List<Prestamo> prestamos;
