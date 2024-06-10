@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,7 +24,7 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 @Data
-//enum Estado {DISPONIBLE,PRESTADO,REPARACION,OTRO}
+
 
 public class Libro {
 
@@ -36,19 +37,21 @@ public class Libro {
     private String Editorial;
     @Temporal(TemporalType.DATE)
     private Date AñoPublicacion;
-    //private Estado stat;
+    
     
 
    
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "libro_autor",
-            joinColumns = @JoinColumn(name = "libro_id"),
-            inverseJoinColumns = @JoinColumn(name = "autor_id"))
-    private List<Autor> autores;
+        name = "libro_autor",
+        joinColumns = @JoinColumn(name = "libro_id"),
+        inverseJoinColumns = @JoinColumn(name = "autor_id"))
+        private List<Autor> autores;
 
     @ManyToOne
     @JoinColumn(name = "prestamo_id")
     private Prestamo prestamo;
+
+    
 
 }
