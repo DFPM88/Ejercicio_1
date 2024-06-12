@@ -15,7 +15,6 @@ import lombok.Builder;
 import lombok.Data;
 
 
-
 @Entity
 @Builder
 @AllArgsConstructor
@@ -38,6 +37,4 @@ public class Prestamo {
 
     @OneToMany(mappedBy = "prestamo")
     private List<Libro> libros;
-
-
 }

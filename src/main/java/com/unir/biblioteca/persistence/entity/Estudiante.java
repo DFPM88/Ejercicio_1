@@ -1,7 +1,6 @@
 package com.unir.biblioteca.persistence.entity;
 
 import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,7 +9,6 @@ import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
 
 
 @Entity
@@ -30,5 +28,4 @@ public class Estudiante {
 
     @OneToMany(mappedBy = "estudiante")
     private List<Prestamo> prestamos;
-
 }
