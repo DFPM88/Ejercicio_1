@@ -1,7 +1,5 @@
 package com.unir.biblioteca.persistence.entity;
 
-import java.sql.Date;
-import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,27 +11,30 @@ import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-
-
 public class Prestamo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Temporal(TemporalType.DATE)
-    private Date FechaPrestamo;
-    @Temporal(TemporalType.DATE)
-    private Date FechaDevolucion;
 
-    
+    @Temporal(TemporalType.DATE)
+    private Date fechaPrestamo;
+
+    @Temporal(TemporalType.DATE)
+    private Date fechaDevolucion;
+
     @ManyToOne
-    private Estudiante estudiante;
+    private Estudiante estudiante; // Mantenemos la relación con Estudiante
 
     @OneToMany(mappedBy = "prestamo")
     private List<Libro> libros;

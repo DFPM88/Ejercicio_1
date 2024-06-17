@@ -28,7 +28,7 @@ public class Libro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String NombreLibro;
+    private String nombreLibro;
     private String Isbn;
     private String Tema;
     private String Editorial;
@@ -48,4 +48,8 @@ public class Libro {
     @ManyToOne
     @JoinColumn(name = "prestamo_id")
     private Prestamo prestamo;
+
+    public Libro() {
+        // Constructor vacío requerido por Hibernate
+    }
 }

@@ -2,6 +2,7 @@ package com.unir.biblioteca.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -13,68 +14,63 @@ import com.unir.biblioteca.repository.RepoAutor;
 public class AutorService {
 
     @Autowired
-    RepoAutor repoautor;
+    private RepoAutor repoAutor;
 
-    public List<Autor>listautor(){
-
-        return repoautor.findAll();
+    public List<Autor> listarAutores() {
+        return repoAutor.findAll();
     }
 
-    public Optional<Autor>buscarId(Long id){
-
-        return repoautor.findById(id);
-
+    public Optional<Autor> buscarAutorPorId(Long id) {
+        return repoAutor.findById(id);
     }
 
-    public void CreateAutor(Autor autor)throws MiException{
-
-        valited(autor);
-        repoautor.save(autor);
+    public void crearAutor(Autor autor) throws MiException {
+        validarAutor(autor);
+        repoAutor.save(autor);
     }
 
-    public void ElimunarAutor(Long id){
-
-        Optional<Autor>autor = repoautor.findById(id);
-        if(autor.isPresent()){
-
-            repoautor.deleteById(id);
-        }else{
-            throw new IllegalArgumentException("El autor no existe");
+    public void eliminarAutor(Long id) {
+        Optional<Autor> autor = repoAutor.findById(id);
+        if (autor.isPresent()) {
+            repoAutor.delete(autor.get());
+        } else {
+            throw new IllegalArgumentException("El autor no existe con ID: " + id);
         }
     }
 
-    public void ActualizarAutor(Long id, Autor UpdateAutor) throws MiException{
-
-        Optional<Autor>respuesta = repoautor.findById(id);
-        if(respuesta.isPresent()){
-
+    public void actualizarAutor(Long id, Autor autorActualizado) throws MiException {
+        Optional<Autor> respuesta = repoAutor.findById(id);
+        if (respuesta.isPresent()) {
             Autor autor = respuesta.get();
-            if (UpdateAutor.getNombreAutor()!=null) {
-                autor.setNombreAutor(UpdateAutor.getNombreAutor());
-                
+            if (autorActualizado.getNombreAutor() != null) {
+                autor.setNombreAutor(autorActualizado.getNombreAutor());
             }
-            if (UpdateAutor.getNacionalidad()!=null){
-                autor.setNacionalidad(UpdateAutor.getNacionalidad());
+            if (autorActualizado.getNacionalidad() != null) {
+                autor.setNacionalidad(autorActualizado.getNacionalidad());
             }
-            if (UpdateAutor.getLibros()!=null){
-                autor.setLibros(UpdateAutor.getLibros());
+            if (autorActualizado.getLibros() != null) {
+                autor.setLibros(autorActualizado.getLibros());
             }
+            repoAutor.save(autor);
+        } else {
+            throw new IllegalArgumentException("Autor no encontrado con ID: " + id);
         }
     }
+
+    public void validarAutor(Autor autor) throws MiException {
+        if (autor.getNombreAutor() == null || autor.getNombreAutor().isEmpty()) {
+            throw new MiException("El campo nombre no puede estar vacío");
+        }
+        if (autor.getNacionalidad() == null || autor.getNacionalidad().isEmpty()) {
+            throw new MiException("El campo nacionalidad no puede estar vacío");
+        }
+        if (autor.getLibros() == null || autor.getLibros().isEmpty()) {
+            throw new MiException("El campo libros no puede estar vacío");
+        }
+    }
+
     
-    public void valited(Autor autor) throws MiException{
-
-        if(autor.getNombreAutor()==null || autor.getNombreAutor().isEmpty()){
-            throw new MiException(" El campo nombre no puede estar vacio");
-        }
-        if(autor.getNacionalidad()==null || autor.getNombreAutor().isEmpty()){
-            throw new MiException(" La campo nacionalidad no puede estar vacio");
-        }
-        if(autor.getLibros()==null || autor.getLibros().isEmpty()){
-            throw new MiException(" El campo libro no puede estar vacio");
-        }
+    public List<Autor> buscarAutoresPorNombre(String nombre) {
+        return repoAutor.findByNombreAutorContainingIgnoreCase(nombre);
     }
-
-
-
 }
