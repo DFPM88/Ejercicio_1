@@ -9,18 +9,19 @@ import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Builder
-@AllArgsConstructor
 @Data
-
+@NoArgsConstructor
+@AllArgsConstructor
 public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String NombreAutor;
-    private String  Nacionalidad;
+    private String nombreAutor;
+    private String nacionalidad;
 
     @ManyToMany(mappedBy = "autores")
     private List<Libro> libros;
