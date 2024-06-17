@@ -60,50 +60,35 @@ public class AutorController {
     @PostMapping("/crear")
     public ResponseEntity<?> crearAutor(@RequestBody Autor nuevoAutor) {
         try {
-            // Busca el libro por id, si no lo encuentra lanza una excepción
             Libro libro = repoLibro.findById(nuevoAutor.getLibros().get(0).getId())
                     .orElseThrow(() -> new IllegalArgumentException("Libro no encontrado"));
 
-            // Asigna el libro al nuevo autor
             nuevoAutor.setLibros(Collections.singletonList(libro));
 
-            // Llama al servicio para crear el autor
             autorService.crearAutor(nuevoAutor);
 
-            // Devuelve la respuesta con el id del autor creado y el estado HTTP 201 (CREATED)
             return new ResponseEntity<>(nuevoAutor.getId(), HttpStatus.CREATED);
         } catch (MiException ex) {
-            // Devuelve una respuesta con el mensaje de error y el estado HTTP 500 (INTERNAL_SERVER_ERROR)
             return new ResponseEntity<>("Error al crear autor: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (IllegalArgumentException ex) {
-            // Devuelve una respuesta con el mensaje de error y el estado HTTP 404 (NOT_FOUND)
             return new ResponseEntity<>("Error al crear autor: " + ex.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<?> actualizarAutor(@PathVariable("id") Long id,
-                                             @RequestBody Autor autorActualizado) {
+    public ResponseEntity<?> actualizarAutor(@PathVariable("id") Long id,@RequestBody Autor autorActualizado) {
         try {
-            // Primero, verificamos si el autor que intentamos actualizar existe
             Autor autorExistente = autorService.buscarAutorPorId(id)
                     .orElseThrow(() -> new IllegalArgumentException("Autor no encontrado"));
 
-            // Actualizamos los campos del autor existente con los valores del autor actualizado
             autorExistente.setNombreAutor(autorActualizado.getNombreAutor());
             autorExistente.setNacionalidad(autorActualizado.getNacionalidad());
-            // Puedes manejar la actualización de libros según tus necesidades específicas
-
-            // Llamamos al servicio para guardar los cambios
             autorService.actualizarAutor(id, autorExistente);
 
-            // Devolvemos una respuesta con un mensaje y el estado HTTP 200 OK
             return new ResponseEntity<>("Autor actualizado correctamente", HttpStatus.OK);
         } catch (MiException ex) {
-            // En caso de excepción de negocio, devolvemos un error interno
             return new ResponseEntity<>("Error al actualizar autor: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (IllegalArgumentException ex) {
-            // Si el autor no existe, devolvemos un error 404 Not Found
             return new ResponseEntity<>("Error al actualizar autor: " + ex.getMessage(), HttpStatus.NOT_FOUND);
         }
     }

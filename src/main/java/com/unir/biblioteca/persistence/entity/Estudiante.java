@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@JsonIgnoreProperties({"prestamos"}) // Evitar ciclos en la serialización
+@JsonIgnoreProperties({"prestamos"})
 public class Estudiante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

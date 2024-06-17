@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@JsonIgnoreProperties({"estudiante", "libros"}) // Evitar ciclos en la serialización
+@JsonIgnoreProperties({"estudiante", "libros"})
 public class Prestamo {
 
     @Id
