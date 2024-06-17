@@ -1,14 +1,11 @@
 package com.unir.biblioteca.repository;
 
-import java.util.Optional;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.unir.biblioteca.persistence.entity.Estudiante;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
+public interface RepoEstudiante extends JpaRepository<Estudiante, Long> {
 
-public interface RepoEstudiante extends JpaRepository<Estudiante,Long>{
-
-    Optional<Estudiante> findByNombreEstudianteIgnoreCase(String nombre);
-
+    List<Estudiante> findByNombreEstudianteContainingIgnoreCase(String nombre);
 }
+

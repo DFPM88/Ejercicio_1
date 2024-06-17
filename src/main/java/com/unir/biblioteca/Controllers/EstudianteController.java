@@ -4,6 +4,7 @@ import com.unir.Exceptions.MiException;
 import com.unir.biblioteca.Services.EstudianteService;
 import com.unir.biblioteca.persistence.entity.Estudiante;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,10 +32,15 @@ public class EstudianteController {
     }
 
     @GetMapping("/buscarpornombre")
-    public ResponseEntity<?> buscarEstudiantePorNombre(@RequestParam("nombre") String nombre) {
-        Optional<Estudiante> estudiante = estudianteService.buscarEstudiantePorNombre(nombre);
-        return estudiante.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<List<Estudiante>> buscarEstudiantesPorNombre(@RequestParam("nombre") String nombre) {
+        List<Estudiante> estudiantes = estudianteService.buscarEstudiantesPorNombre(nombre);
+        if (estudiantes.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(estudiantes);
+        }
     }
+    
 
     @PostMapping("/crear")
     public ResponseEntity<?> crearEstudiante(@RequestBody Estudiante estudiante) {
@@ -57,13 +63,17 @@ public class EstudianteController {
         }
     }
 
-    @DeleteMapping("/eliminar/{id}")
+  @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminarEstudiante(@PathVariable("id") Long id) {
         try {
             estudianteService.eliminarEstudiante(id);
             return new ResponseEntity<>("Estudiante eliminado correctamente", HttpStatus.OK);
         } catch (IllegalArgumentException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (DataIntegrityViolationException ex) {
+            return new ResponseEntity<>("No se puede eliminar el estudiante porque tiene registros asociados en la tabla de prestamos.", HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("Error al intentar eliminar el estudiante: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

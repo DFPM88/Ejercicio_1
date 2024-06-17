@@ -10,7 +10,7 @@ import com.unir.Exceptions.MiException;
 import com.unir.biblioteca.persistence.entity.Prestamo;
 import com.unir.biblioteca.repository.RepoPrestamo;
 
-import java.sql.Date;
+
 
 @Service
 public class PrestamoService {
@@ -66,10 +66,5 @@ public class PrestamoService {
         if (prestamo.getFechaPrestamo() == null) {
             throw new MiException("La fecha de préstamo no puede estar vacía");
         }
-        // Puedes añadir más validaciones según sea necesario
-    }
-
-    public List<Prestamo> buscarPrestamosPorFecha(Date fecha) {
-        return prestamoRepository.findByFechaPrestamo(fecha);
     }
 }

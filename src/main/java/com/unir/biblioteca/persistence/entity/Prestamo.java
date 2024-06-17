@@ -8,6 +8,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@JsonIgnoreProperties({"estudiante", "libros"}) // Evitar ciclos en la serialización
 public class Prestamo {
 
     @Id
@@ -34,7 +36,7 @@ public class Prestamo {
     private Date fechaDevolucion;
 
     @ManyToOne
-    private Estudiante estudiante; // Mantenemos la relación con Estudiante
+    private Estudiante estudiante;
 
     @OneToMany(mappedBy = "prestamo")
     private List<Libro> libros;

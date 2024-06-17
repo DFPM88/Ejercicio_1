@@ -66,15 +66,5 @@ public class PrestamoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error al eliminar préstamo: " + ex.getMessage());
         }
     }
-
-    @GetMapping("/buscar")
-    public ResponseEntity<List<Prestamo>> buscarPorFecha(@RequestParam("fecha") java.sql.Date fecha) {
-        try {
-            List<Prestamo> prestamos = prestamoService.buscarPrestamosPorFecha(fecha);
-            return ResponseEntity.ok(prestamos);
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-    }
     
 }

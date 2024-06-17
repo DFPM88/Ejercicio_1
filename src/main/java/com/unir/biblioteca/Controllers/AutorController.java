@@ -4,6 +4,7 @@ import com.unir.Exceptions.MiException;
 import com.unir.biblioteca.Services.AutorService;
 import com.unir.biblioteca.persistence.entity.Autor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,8 @@ import com.unir.biblioteca.repository.RepoLibro;
 
 import java.util.Collections;
 import java.util.List;
+
+
 
 @RestController
 @RequestMapping("/autor")
@@ -34,6 +37,7 @@ public class AutorController {
         try {
             Autor autor = autorService.buscarAutorPorId(id)
                     .orElseThrow(() -> new IllegalArgumentException("Autor no encontrado"));
+
             return new ResponseEntity<>(autor, HttpStatus.OK);
         } catch (IllegalArgumentException ex) {
             return new ResponseEntity<>("Error al buscar autor: " + ex.getMessage(), HttpStatus.NOT_FOUND);
@@ -54,25 +58,20 @@ public class AutorController {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<?> crearAutor(@RequestParam("nombreautor") String nombreAutor,
-                                        @RequestParam("nacionalidad") String nacionalidad,
-                                        @RequestParam("libros") Long librosId) {
+    public ResponseEntity<?> crearAutor(@RequestBody Autor nuevoAutor) {
         try {
             // Busca el libro por id, si no lo encuentra lanza una excepción
-            Libro libro = repoLibro.findById(librosId)
+            Libro libro = repoLibro.findById(nuevoAutor.getLibros().get(0).getId())
                     .orElseThrow(() -> new IllegalArgumentException("Libro no encontrado"));
 
-            // Instancia el objeto Autor y configura sus propiedades
-            Autor autor = new Autor();
-            autor.setNombreAutor(nombreAutor);
-            autor.setNacionalidad(nacionalidad);
-            autor.setLibros(Collections.singletonList(libro));
+            // Asigna el libro al nuevo autor
+            nuevoAutor.setLibros(Collections.singletonList(libro));
 
             // Llama al servicio para crear el autor
-            autorService.crearAutor(autor);
+            autorService.crearAutor(nuevoAutor);
 
             // Devuelve la respuesta con el id del autor creado y el estado HTTP 201 (CREATED)
-            return new ResponseEntity<>(autor.getId(), HttpStatus.CREATED);
+            return new ResponseEntity<>(nuevoAutor.getId(), HttpStatus.CREATED);
         } catch (MiException ex) {
             // Devuelve una respuesta con el mensaje de error y el estado HTTP 500 (INTERNAL_SERVER_ERROR)
             return new ResponseEntity<>("Error al crear autor: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -111,11 +110,13 @@ public class AutorController {
 
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminarAutorPorId(@PathVariable("id") Long id) {
-        try {
-            autorService.eliminarAutor(id);
-            return new ResponseEntity<>("Autor eliminado correctamente", HttpStatus.OK);
-        } catch (IllegalArgumentException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    try {
+        autorService.eliminarAutor(id);
+        return new ResponseEntity<>("Autor eliminado correctamente", HttpStatus.OK);
+    } catch (DataIntegrityViolationException ex) {
+        return new ResponseEntity<>("No se puede eliminar el autor porque tiene libros asociados", HttpStatus.CONFLICT);
+    } catch (IllegalArgumentException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
     }
 }

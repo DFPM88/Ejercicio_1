@@ -24,9 +24,10 @@ public class EstudianteService {
         return repoEstudiante.findById(id);
     }
 
-    public Optional<Estudiante> buscarEstudiantePorNombre(String nombre) {
-        return repoEstudiante.findByNombreEstudianteIgnoreCase(nombre);
+    public List<Estudiante> buscarEstudiantesPorNombre(String nombre) {
+        return repoEstudiante.findByNombreEstudianteContainingIgnoreCase(nombre);
     }
+
 
     public void crearEstudiante(Estudiante estudiante) throws MiException {
         validarEstudiante(estudiante);
